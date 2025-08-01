@@ -1,31 +1,28 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
-provider "aws" {
-  region = var.region
+provider "google" {
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
+resource "google_compute_instance" "vm_instance" {
+  name         = "tfc-demo-vm"
+  machine_type = "e2-micro"
+  zone         = var.zone
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
   }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+  network_interface {
+    network       = "default"
+    access_config {}  # Allocates public IP
   }
 
-  owners = ["099720109477"] # Canonical
-}
-
-resource "aws_instance" "ubuntu" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-
-  tags = {
-    Name = var.instance_name
+  metadata = {
+    ssh-keys = "terraform:${file("~/.ssh/id_rsa.pub")}"
   }
+
+  tags = ["terraform-demo"]
 }
