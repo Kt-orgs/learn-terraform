@@ -20,9 +20,5 @@ resource "google_compute_instance" "vm_instance" {
     access_config {}  # Allocates public IP
   }
 
-  metadata = {
-    ssh-keys = "terraform:${file("~/.ssh/id_rsa.pub")}"
-  }
-
   tags = ["terraform-demo"]
 }
