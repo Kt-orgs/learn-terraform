@@ -1,9 +1,9 @@
 terraform {
   cloud {
-    organization = "your-tfc-org-name"
+    organization = "KT-orgs"
 
     workspaces {
-      name = "your-workspace-name"
+      name = "learn-terraform"
     }
   }
 
